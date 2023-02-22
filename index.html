@@ -1,143 +1,61 @@
-<html>
-  <body>
-    <style>.card-container {
-        display: grid;
-        padding: 1rem;
-        grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-        grid-gap: 1rem;
-    }
-    .card {
-        display: grid;
-    }
-    .card .button {
-        align-self: end;
-    }
-    
+<!doctype html>
+<html lang="en-us">
+  
+  <head>
+    <title>Breast MRI</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <script src="https://cdn.rawgit.com/Keyang/node-csvtojson/d41f44aa/browser/csvtojson.min.js"></script>
 
-    /* Simple Card styles for prettying */
-
-    html {
-        font-size: 16px;
-        font-family: 'Open Sans', 'Helvetica Neue', 'Arial', sans-serif;
-    }
-
-    body {
-        background-color: #efefef;
-    }
-    * {
-        box-sizing: border-box;
-    }
-    .card {
-        box-shadow: 0px 1px 5px #555;
-        background-color: white;
-    }
-    .card__title {
-        font-size: 1.7rem;
-        padding: .5rem;
-    }
-    .card__description {
-        padding: .5rem;
-        line-height: 1.6em;
-        min-height: 10em;
-    }
-    .button {
-        display: block;
-        background-color: tomato;
-        padding: 10px 20px;
-        color: white;
-        text-decoration: none;
-        text-align: center;
-        transition: .3s ease-out;
-        &:hover {
-            background-color: darken(tomato, 10%);
+    <style>
+        .card {
+          box-shadow: 0 1px 5px 0 rgba(0,0,0,0.2);
+          transition: 0.3s;
+          margin: 50px 20px 20px 20px;
+          width: calc(33.3333% - 40px); /* 1/3 minus the margins (20+20) */
+          border-radius: 5px;
+          float: left;
         }
-    }
-    img {
-        max-width: 100%;
-    }
-    .card__thumbnail{
-    min-height: 22em;
-    }
-
-    </style>
-    
-    <section class="card-container">
-        <article class="card">
-            <header class="card__title">
-                <h4>Case 1A</h4>
-            </header>
-            <figure class="card__thumbnail">
-                <a href= "https://www.pacsbin.com/c/Wy4V_a6iRP" target="_blank">
-                <img src="1a.png" target="_blank">
-                </a>
-            </figure>
-        _________________________________________
-            <main class="card__description">
-                Case 1a description
-            </main>
-            <a href="https://www.youtube.com/" target="_blank" class="button">YouTube Walkthrough not yet available</a>
-
-        </article>
-        <article class="card">
-            <header class="card__title">
-                <h4>Case 1B</h4>
-            </header>
-            <figure class="card__thumbnail">
-                <a href= "https://www.pacsbin.com/c/-JqIa6aoRP" target="_blank">
-                <img src="1b.png" target="_blank">
-                </a>
-    </figure>
-        _________________________________________
-            <main class="card__description">
-                Case 1b description
-            </main>
-            <a href="https://www.youtube.com/" target="_blank" class="button">YouTube Walkthrough not yet available</a>
-        </article>
-    <article class="card">
-            <header class="card__title">
-                <h4>Case 2a</h4>
-            </header>
-            <figure class="card__thumbnail">
-                <a href= "https://www.pacsbin.com/c/bJkLz0aoCv" target="_blank">
-                <img src="2a.png" target="_blank">
-                </a>
-    </figure>
-        _________________________________________
-            <main class="card__description">
-                2a description
-            </main>
-            <a href="https://www.youtube.com/" target="_blank" class="button">YouTube Walkthrough not yet available</a>
-        </article>
-    <article class="card">
-            <header class="card__title">
-                <h4>Case 2B</h4>
-            </header>
-            <figure class="card__thumbnail">
-                <a href= "https://www.pacsbin.com/c/-yGBXgqapD" target="_blank">
-                <img src="2b.png" target="_blank">
-                </a>
-    </figure>
-        _________________________________________
-            <main class="card__description">
-                2b description
-            </main>
-            <a href="https://www.youtube.com/" target="_blank" class="button">YouTube Walkthrough not yet available</a>
-        </article>
-    <article class="card">
-            <header class="card__title">
-                <h4>Case 3a</h4>
-            </header>
-            <figure class="card__thumbnail">
-                <a href= "https://www.pacsbin.com/c/-yUOrCpiRw" target="_blank">
-                <img src="3a.png" target="_blank">
-                </a>
-    </figure>
-        _________________________________________
-            <main class="card__description">
-                Case 3a description
-            </main>
-            <a href="https://www.youtube.com/" target="_blank" class="button">YouTube Walkthrough not yet available</a>
-        </article>
-    </section>
+        .card:hover {
+          box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+        }
+        img {
+          border-radius: 5px 5px 0 0;
+          max-width: 100%;
+        }
+        .card-img-top {
+            width: 100%;
+            object-fit: cover;
+        }
+        .container {
+          padding: 2px 16px;
+        }
+        </style>
+  </head>
+  
+  <body>
+    <h1>Breast MRI</h1>
+    <main>
+    </main>
   </body>
+  
+  <script>
+    const url = "https://docs.google.com/spreadsheets/d/1etlVrxXM18TMqmfJoKsc2nhfb-5ax92fJ5XPv6L_L8U/export?format=csv"
+    const main = document.querySelector("main")
+
+    // fetch gs data -> csv
+    fetch(url).then(result=>result.text()).then(function(csvtext) {
+        return csv().fromString(csvtext);
+        }).then(function(csv) {
+        csv.forEach(function(row) 
+        {
+        // Code for csv based card
+        main.innerHTML +='<div class="card"><div class="title"> Case ' + row.case + '</div>' 
+        + '<a href="'+ row.pacsbin +'"><img src ="' + row.img + '" class="card-img-top"></a>'
+        + '<p>' + row.Indication + '</p>' 
+        + '<a href="' + row.youtube + '"><img src="https://lh3.googleusercontent.com/R6tKt4NEPM-lrGPew-jCoRCxneBSi4A5DOKBHB4nPxMVvxLev_Q4gPgCjcHfttn0EDk-alLM6mzqIYZM5LhcSPYtKamOch1qUshWlXBSqVMIn8V4PRuCDWk8Hh2pTfM5ozHIU139p0MH0zzlH9HRxr4Lm6_zPv5qAWMrh-z1LXC08a6mpH_1cc5fQKuTy_tvQ416sqM8On0PnRu1xqzUCATabrrcdBv967D31UGvGxmqFNDy95TF4PoH3Zzaj9FTe2Qelju0Pt6d8T7B3RmA_SvjvxWzRX4HOiCQFg6MDi9hKwvZVTvPstz8e5Z4GMqXQB5ts0BriBBHIA9vw9wSPU34-kqY8nWOhbzxntduHGaU-HBMMwmT7q_MV2lEgosiw3vGnBTJ7yGw1y72HjuebK1dt1S3noNlzhOHmoi3tXjRWMBWcBKQ6mCV9jARoP_7OLa8Y2OlhVsfKnYIMqDdnFT8Rhkd_2ETbhnWuc5BgGzloVCYsQ49tyxh0qpaltYfVGoeKljhmDb9DpprTA6AL6aN9yOA-M3JgZ6UL2L6MUqkI28FEO40dFVnAEv6vJ9wjKTXz9aCqDLEmr-tDSh5zsDnuW6oeukqt7UMH1tALT0ABhOeKIF-sd1e1D6UnppAKEsDh6yW55PYydis7GhGE9IU56TynumpWDusflrJmnT5uqyueRrukNtaUmJ08gSn3RCx6TlcQGeTyPJT6LvwkIstFmZ7rGbJUdIUo-neqiNBFps7EhOojfQ6QGdmqn913KkBC1pyCUw101TRIJu07VWDb2uWE4N1NEHNv1XYygGDgHObx1TCQlj1aglYv1X-4e71cHOoMrgR0Ki8zRSoC_k9Oe8hehIHUiJ_Rl1UyQevwTjAS9bGcuGFgZxwoRbVh5hPw4-YWGsjGXYAVvn174n1x5Emewd8gXQd9nTgF2qh3wI=w278-h202-s-no?authuser=0"></a></div>';
+        });
+    });
+  </script>
 </html>
